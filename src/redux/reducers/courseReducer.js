@@ -3,6 +3,6 @@ export default function courseReducer(state = [], action) {
     case "CREATE_COURSE":
       return [...state, { ...action.course }];
     default:
-      return state; 
+      return state;
   }
 }

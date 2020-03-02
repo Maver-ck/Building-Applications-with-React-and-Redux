@@ -19,11 +19,7 @@ class CoursesPage extends React.Component {
   handleSubmit = event => {
     // preventDefailt required as the form reloads otherwise and doesn't create the alert
     event.preventDefault();
-    // connect function auto adds dispatch as a prop function
-    // we're dispatching the createCourse action and passing it to the course
-    // we HAVE to dispatch an action - if you just call an action creator it wont do anything
-    // action creators just return an object
-    this.props.dispatch(courseActions.createCourse(this.state.course));
+    this.props.createCourse(this.state.course);
   };
 
   render() {
@@ -48,7 +44,7 @@ class CoursesPage extends React.Component {
 
 // we expect dispatch to be passed into the component and it will be as connect auto passes in here
 CoursesPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  createCourse: PropTypes.func.isRequired,
   courses: PropTypes.array.isRequired
 };
 
@@ -59,5 +55,14 @@ function mapStateToProps(state) {
   };
 }
 
-// we omitted mapDispatchToProps => our component gets a dispatch prop injected automatically
-export default connect(mapStateToProps)(CoursesPage);
+// determines what actions are available on props in our component
+function mapDispatchToProps(dispatch) {
+  return {
+    // wrap in a call to dispatch otherwise nothing will happen
+    createCourse: course => dispatch(courseActions.createCourse(course))
+  };
+}
+
+// we declare mapDispatchToProps so dispatch is no longer injected.
+// Only the actions we declared in mapDispatchToProps are passed in
+export default connect(mapStateToProps, mapDispatchToProps)(CoursesPage);
