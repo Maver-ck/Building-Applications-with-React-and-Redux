@@ -56,10 +56,13 @@ function mapStateToProps(state) {
   };
 }
 
-// when declared as an object, each property is auto bound to dispatch
-const mapDispatchToProps = {
-  createCourse: courseActions.createCourse
-};
+// determines what actions are available on props in our component
+function mapDispatchToProps(dispatch) {
+  return {
+    // bindActionCreators wraps courseActions in a dispatch - NOTE IT PASSES IN ALL OF THE ACTIONS
+    actions: bindActionCreators(courseActions, dispatch)
+  };
+}
 
 // we declare mapDispatchToProps so dispatch is no longer injected.
 // Only the actions we declared in mapDispatchToProps are passed in
