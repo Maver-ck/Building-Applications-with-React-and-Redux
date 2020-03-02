@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import * as courseActions from "../../redux/actions/courseActions";
 import PropTypes from "prop-types";
+import { bindActionCreators } from "redux";
 class CoursesPage extends React.Component {
   // class field
   state = {
@@ -19,7 +20,7 @@ class CoursesPage extends React.Component {
   handleSubmit = event => {
     // preventDefailt required as the form reloads otherwise and doesn't create the alert
     event.preventDefault();
-    this.props.createCourse(this.state.course);
+    this.props.actions.createCourse(this.state.course);
   };
 
   render() {
@@ -44,7 +45,7 @@ class CoursesPage extends React.Component {
 
 // we expect dispatch to be passed into the component and it will be as connect auto passes in here
 CoursesPage.propTypes = {
-  createCourse: PropTypes.func.isRequired,
+  actions: PropTypes.object.isRequired,
   courses: PropTypes.array.isRequired
 };
 
@@ -58,8 +59,8 @@ function mapStateToProps(state) {
 // determines what actions are available on props in our component
 function mapDispatchToProps(dispatch) {
   return {
-    // wrap in a call to dispatch otherwise nothing will happen
-    createCourse: course => dispatch(courseActions.createCourse(course))
+    // bindActionCreators wraps courseActions in a dispatch - NOTE IT PASSES IN ALL OF THE ACTIONS
+    actions: bindActionCreators(courseActions, dispatch)
   };
 }
 
