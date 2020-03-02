@@ -38,6 +38,9 @@ class CoursesPage extends React.Component {
           value={this.state.course.title}
         />
         <input type="submit" value="Save" />
+        {this.props.courses.map(course => (
+          <div key={course.title}>{course.title}</div>
+        ))}
       </form>
     );
   }
@@ -45,7 +48,8 @@ class CoursesPage extends React.Component {
 
 // we expect dispatch to be passed into the component and it will be as connect auto passes in here
 CoursesPage.propTypes = {
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
+  courses: PropTypes.array.isRequired
 };
 
 // determines what state is passed to our component via props
