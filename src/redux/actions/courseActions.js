@@ -12,8 +12,13 @@ export function loadCourseSuccess(courses) {
 export function loadCourses() {
   // note we don't have to pass dispatch to loadCourses - this is the benefit of redux-thunk
   return function(dispatch) {
-    return courseApi.getCourses().then(courses => {
-      dispatch(loadCourseSuccess(courses));
-    });
+    return courseApi
+      .getCourses()
+      .then(courses => {
+        dispatch(loadCourseSuccess(courses));
+      })
+      .catch(error => {
+        throw error;
+      });
   };
 }
