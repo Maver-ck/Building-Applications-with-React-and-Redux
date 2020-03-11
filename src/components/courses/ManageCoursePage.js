@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as courseActions from "../../redux/actions/courseActions";
 import * as authorActions from "../../redux/actions/authorActions";
 import PropTypes from "prop-types";
 
-class ManageCoursePage extends React.Component {
-  componentDidMount() {
-    const { courses, authors, loadAuthors, loadCourses } = this.props;
+//function components with hooks are easier to declare and maintain over classes
+function ManageCoursePage({ courses, authors, loadAuthors, loadCourses }) {
+  // hook lets us handle side effects
+  // this effect will run every time the component renders
+  // we want this to run once when the component mounts => we can declare a second argument to useEffect
+  // second argument is an array  of items to watch, if anything in the array changes the effect will be rerun
+  // since we only want it to run once we declare an empty array => this is effectively the same as componentDidMount
+  useEffect(() => {
     if (courses.length === 0) {
       loadCourses().catch(error => {
         alert("Loading courses failed" + error);
@@ -17,14 +22,14 @@ class ManageCoursePage extends React.Component {
         alert("Loading authors failed" + error);
       });
     }
-  }
-  render() {
-    return (
-      <>
-        <h2>Manage Course</h2>
-      </>
-    );
-  }
+  }, []);
+
+  // function component doesn't need "render()" any more as it's implied
+  return (
+    <>
+      <h2>Manage Course</h2>
+    </>
+  );
 }
 
 // we expect dispatch to be passed into the component and it will be as connect auto passes in here
