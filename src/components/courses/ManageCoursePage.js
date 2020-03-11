@@ -5,6 +5,7 @@ import { loadAuthors } from "../../redux/actions/authorActions";
 import PropTypes from "prop-types";
 import CourseForm from "./CourseForm";
 import { newCourse } from "../../../tools/mockData";
+import Spinner from "../common/Spinner";
 
 //function components with hooks are easier to declare and maintain over classes
 function ManageCoursePage({
@@ -64,7 +65,9 @@ function ManageCoursePage({
   }
 
   // function component doesn't need "render()" any more as it's implied
-  return (
+  return authors.length === 0 || courses.length === 0 ? (
+    <Spinner />
+  ) : (
     <CourseForm
       course={course}
       errors={errors}
