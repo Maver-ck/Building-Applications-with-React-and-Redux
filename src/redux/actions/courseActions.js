@@ -28,10 +28,10 @@ export function loadCourses() {
 }
 
 export function saveCourse(course) {
-  //eslint-disable-next-line no-unused-varsd
+  //eslint-disable-next-line no-unused-vars
   return function(dispatch, getState) {
     return courseApi
-      .saveCourse()
+      .saveCourse(course)
       .then(savedCourse => {
         course.id
           ? dispatch(updateCourseSuccess(savedCourse))

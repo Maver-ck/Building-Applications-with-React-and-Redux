@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import * as courseActions from "../../redux/actions/courseActions";
-import * as authorActions from "../../redux/actions/authorActions";
+import { loadCourses, saveCourse } from "../../redux/actions/courseActions";
+import { loadAuthors } from "../../redux/actions/authorActions";
 import PropTypes from "prop-types";
 import CourseForm from "./CourseForm";
 import { newCourse } from "../../../tools/mockData";
@@ -12,6 +12,8 @@ function ManageCoursePage({
   authors,
   loadAuthors,
   loadCourses,
+  saveCourse,
+  history
   ...props
 }) {
   // useState hook allows us to add React state to function components
@@ -46,8 +48,16 @@ function ManageCoursePage({
     setCourse(prevCourse => ({
       // JS computed property syntax - allows us to reference a property via a variable
       // events returns numbers as strings so we need to convert authorId to an int here
+      ...prevCourse,
       [name]: name === "authorId" ? parseInt(value, 10) : value
     }));
+  }
+
+  function handleSave(event) {
+    event.preventDefault();
+    saveCourse(course).then(() => {
+      history.pushState("/courses");
+    });
   }
 
   // function component doesn't need "render()" any more as it's implied
@@ -57,6 +67,7 @@ function ManageCoursePage({
       errors={errors}
       authors={authors}
       onChange={handleChange}
+      onSave={handleSave}
     />
   );
 }
@@ -67,7 +78,9 @@ ManageCoursePage.propTypes = {
   authors: PropTypes.array.isRequired,
   courses: PropTypes.array.isRequired,
   loadCourses: PropTypes.func.isRequired,
-  loadAuthors: PropTypes.func.isRequired
+  loadAuthors: PropTypes.func.isRequired,
+  saveCourse: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired
 };
 
 // determines what state is passed to our component via props
@@ -80,8 +93,9 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  loadCourses: courseActions.loadCourses,
-  loadAuthors: authorActions.loadAuthors
+  loadCourses,
+  loadAuthors,
+  saveCourse
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageCoursePage);
