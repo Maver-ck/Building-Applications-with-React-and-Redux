@@ -39,11 +39,25 @@ function ManageCoursePage({
     }
   }, []);
 
+  function handleChange(event) {
+    // destructure avoids the event getting garbage collected so it's available within the nested setCourse callback
+    const { name, value } = event.target;
+    // functional form of set state so you can reference previous state as you set new state
+    setCourse(prevCourse => ({
+      // JS computed property syntax - allows us to reference a property via a variable
+      // events returns numbers as strings so we need to convert authorId to an int here
+      [name]: name === "authorId" ? parseInt(value, 10) : value
+    }));
+  }
+
   // function component doesn't need "render()" any more as it's implied
   return (
-    <>
-      <CourseForm course={course} errors={errors} authors={authors} />
-    </>
+    <CourseForm
+      course={course}
+      errors={errors}
+      authors={authors}
+      onChange={handleChange}
+    />
   );
 }
 
