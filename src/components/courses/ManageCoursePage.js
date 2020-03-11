@@ -13,13 +13,14 @@ function ManageCoursePage({
   loadAuthors,
   loadCourses,
   saveCourse,
-  history
+  history,
   ...props
 }) {
   // useState hook allows us to add React state to function components
   // initialise course state to a copy of the value passed in on props
   // NOTE: using react state rather than Redux -
   // Avoid using Redux for all state.  Use plain React state for local form state and Redux for global values
+  // this happens once - when the component is mounted but it means ...props.course is initial value => problem, no data available here due to async transactions
   const [course, setCourse] = useState({ ...props.course });
   const [errors, setErrors] = useState({});
 
@@ -33,13 +34,15 @@ function ManageCoursePage({
       loadCourses().catch(error => {
         alert("Loading courses failed" + error);
       });
+    } else {
+      setCourse({ ...props.course });
     }
     if (authors.length === 0) {
       loadAuthors().catch(error => {
         alert("Loading authors failed" + error);
       });
     }
-  }, []);
+  }, [props.course]);
 
   function handleChange(event) {
     // destructure avoids the event getting garbage collected so it's available within the nested setCourse callback
@@ -56,7 +59,7 @@ function ManageCoursePage({
   function handleSave(event) {
     event.preventDefault();
     saveCourse(course).then(() => {
-      history.pushState("/courses");
+      history.push("/courses"); //after the save is done, use react router's history to change url to the courses page.  (could have used Redirect also)
     });
   }
 
@@ -83,10 +86,19 @@ ManageCoursePage.propTypes = {
   history: PropTypes.object.isRequired
 };
 
+export function getCourseBySlug(courses, slug) {
+  return courses.find(course => course.slug === slug) || null;
+}
+
 // determines what state is passed to our component via props
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  const slug = ownProps.match.params.slug;
+  const course =
+    slug && state.courses.length > 0
+      ? getCourseBySlug(state.courses, slug)
+      : newCourse;
   return {
-    course: newCourse,
+    course,
     courses: state.courses,
     authors: state.authors
   };
