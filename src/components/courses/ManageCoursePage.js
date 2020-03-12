@@ -62,10 +62,15 @@ function ManageCoursePage({
   function handleSave(event) {
     event.preventDefault();
     setSaving(true);
-    saveCourse(course).then(() => {
-      toast.success("Course Saved");
-      history.push("/courses"); //after the save is done, use react router's history to change url to the courses page.  (could have used Redirect also)
-    });
+    saveCourse(course)
+      .then(() => {
+        toast.success("Course Saved");
+        history.push("/courses"); //after the save is done, use react router's history to change url to the courses page.  (could have used Redirect also)
+      })
+      .catch(error => {
+        setSaving(false);
+        setErrors({ onSave: error.message });
+      });
   }
 
   // function component doesn't need "render()" any more as it's implied
