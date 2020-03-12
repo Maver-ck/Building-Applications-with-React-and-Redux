@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import CourseForm from "./CourseForm";
 import { newCourse } from "../../../tools/mockData";
 import Spinner from "../common/Spinner";
+import { toast } from "react-toastify";
 
 //function components with hooks are easier to declare and maintain over classes
 function ManageCoursePage({
@@ -24,6 +25,7 @@ function ManageCoursePage({
   // this happens once - when the component is mounted but it means ...props.course is initial value => problem, no data available here due to async transactions
   const [course, setCourse] = useState({ ...props.course });
   const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
 
   // hook lets us handle side effects
   // this effect will run every time the component renders
@@ -59,7 +61,9 @@ function ManageCoursePage({
 
   function handleSave(event) {
     event.preventDefault();
+    setSaving(true);
     saveCourse(course).then(() => {
+      toast.success("Course Saved");
       history.push("/courses"); //after the save is done, use react router's history to change url to the courses page.  (could have used Redirect also)
     });
   }
@@ -74,6 +78,7 @@ function ManageCoursePage({
       authors={authors}
       onChange={handleChange}
       onSave={handleSave}
+      saving={saving}
     />
   );
 }
